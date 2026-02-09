@@ -16,8 +16,8 @@ GEMINI_API_KEY=your-key
 node ./src/cli.js --prompt "Your prompt" --duration 3 --fps 12 --resolution 512x512 --output ./output
 node ./src/cli.js --prompt "一个Goblin一样的怪物，头顶上写着DDos" --duration 3 --fps 12 --resolution 256x256 --output ./output
 
-// 仅抽帧（需要先生成mp4）
-❯ node ./src/cli.js  --frames-only  --duration 3 --fps 12 --resolution 512x512 --output ./output
+// 仅抽帧（需要先生成 character.mp4）
+node ./src/cli.js  --frames-only  --padding 0.2 --duration 3 --fps 12 --resolution 512x512 --output ./output
 
 // 对大图片进行再次抽帧脚本（需要先生成大图片png）
 node src/selectFrames.js ./output 

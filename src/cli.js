@@ -15,6 +15,7 @@ const basePromptPath = path.join(__dirname, 'descriptions.txt');
 
 const argv = yargs(hideBin(process.argv))
   .option('prompt', { type: 'string' })
+  .option('padding', { type: 'number', default: 0, description: 'Optional padding around centered content in frames; can be a fraction of frame size (e.g. 0.1 for 10%) or an absolute pixel value' })
   .option('duration', { type: 'number', default: 3 })
   .option('fps', { type: 'number', default: 12 })
   .option('resolution', { type: 'string', default: '512x512' })
@@ -51,7 +52,8 @@ async function main() {
     frameWidth: 256,
     frameHeight: 256,
     columns: 8,
-    fps: argv.fps
+    fps: argv.fps,
+    padding: argv.padding
   });
 }
 
