@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
 
+// tt validated: this function will return us the middle square region of the image, 
+// which is where our character should be centered in the video frames
 function getCenterSquare(metadata) {
   const width = metadata.width ?? 0;
   const height = metadata.height ?? 0;

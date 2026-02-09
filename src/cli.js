@@ -14,11 +14,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const basePromptPath = path.join(__dirname, 'descriptions.txt');
 
 const argv = yargs(hideBin(process.argv))
-  .option('prompt', { type: 'string', demandOption: true })
+  .option('prompt', { type: 'string' })
   .option('duration', { type: 'number', default: 3 })
   .option('fps', { type: 'number', default: 12 })
   .option('resolution', { type: 'string', default: '512x512' })
   .option('output', { type: 'string', default: './output' })
+  .option('frames-only', { type: 'boolean', default: false, description: 'Only extract frames from an existing mp4; do not generate video' })
   .argv;
 
 async function main() {
@@ -31,20 +32,20 @@ async function main() {
 
   const outputDir = path.resolve(argv.output);
   fs.mkdirSync(outputDir, { recursive: true });
+
   const mp4Path = path.join(outputDir, 'character.mp4');
-
-  const operationResponse = await generateVideo({
-    prompt: fullPrompt
-  });
-
-  await downloadGeneratedVideo({
-    operationResponse,
-    downloadPath: mp4Path
-  });
+  if (argv['frames-only']) {
+    // User requested only frame extraction. Require an existing mp4.
+    if (!fs.existsSync(mp4Path)) {
+      throw new Error(`--frames-only set but mp4 not found at ${mp4Path}. Provide --input <path to mp4> or run without --frames-only to generate one.`);
+    }
+  } else {
+    const operationResponse = await generateVideo({ prompt: fullPrompt });
+    await downloadGeneratedVideo({ operationResponse, downloadPath: mp4Path });
+  }
 
   const framesDir = path.join(outputDir, 'frames');
   await extractFrames({ input: mp4Path, outputDir: framesDir, fps: argv.fps });
-
   await buildSpriteSheet({
     framesDir,
     frameWidth: 256,
