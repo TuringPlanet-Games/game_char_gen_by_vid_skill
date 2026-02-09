@@ -1,0 +1,8 @@
+A tower defense game character animation.
+2D game asset, front view, full body visible.
+Single character centered in frame.
+Pure black background.
+Smooth looping animation.
+No camera movement.
+No background objects.
+Game-ready sprite animation.

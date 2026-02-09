@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import dotenv from 'dotenv';
@@ -8,6 +9,9 @@ import { extractFrames } from './ffmpegHelper.js';
 import { buildSpriteSheet } from './spriteBuilder.js';
 
 dotenv.config();
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const basePromptPath = path.join(__dirname, 'descriptions.txt');
 
 const argv = yargs(hideBin(process.argv))
   .option('prompt', { type: 'string', demandOption: true })
@@ -22,12 +26,15 @@ async function main() {
     throw new Error('GOOGLE_API_KEY is required');
   }
 
+  const basePrompt = fs.readFileSync(basePromptPath, 'utf8').trim();
+  const fullPrompt = [basePrompt, argv.prompt].filter(Boolean).join('\n');
+
   const outputDir = path.resolve(argv.output);
   fs.mkdirSync(outputDir, { recursive: true });
   const mp4Path = path.join(outputDir, 'character.mp4');
 
   const operationResponse = await generateVideo({
-    prompt: argv.prompt
+    prompt: fullPrompt
   });
 
   await downloadGeneratedVideo({

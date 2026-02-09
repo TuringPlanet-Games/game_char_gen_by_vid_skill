@@ -13,7 +13,7 @@ GEMINI_API_KEY=your-key
 ## 用法
 ```
 node ./src/cli.js --prompt "Your prompt" --duration 3 --fps 12 --resolution 512x512 --output ./output
-node ./src/cli.js --prompt "一个Goblin一样的怪物，头顶上写着DDos" --duration 3 --fps 12 --resolution 512x512 --output ./output
+node ./src/cli.js --prompt "一个Goblin一样的怪物，头顶上写着DDos" --duration 3 --fps 12 --resolution 256x256 --output ./output
 ```
 
 输出目录包含：
