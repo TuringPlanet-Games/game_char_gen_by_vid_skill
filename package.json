@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^1.40.0",
     "axios": "^1.13.5",
     "dotenv": "^17.2.4",
     "sharp": "^0.34.5",

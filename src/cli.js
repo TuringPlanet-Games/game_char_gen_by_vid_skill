@@ -1,7 +1,9 @@
+import fs from 'fs';
+import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import dotenv from 'dotenv';
-import { generateVideo } from './veoClient.js';
+import { generateVideo, downloadGeneratedVideo } from './veoClient.js';
 import { extractFrames } from './ffmpegHelper.js';
 import { buildSpriteSheet } from './spriteBuilder.js';
 
@@ -16,20 +18,22 @@ const argv = yargs(hideBin(process.argv))
   .argv;
 
 async function main() {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error('GEMINI_API_KEY is required');
+  if (!process.env.GOOGLE_API_KEY) {
+    throw new Error('GOOGLE_API_KEY is required');
   }
 
-  const video = await generateVideo({
-    prompt: argv.prompt,
-    duration: argv.duration,
-    fps: argv.fps,
-    resolution: argv.resolution
+  const outputDir = path.resolve(argv.output);
+  fs.mkdirSync(outputDir, { recursive: true });
+  const mp4Path = path.join(outputDir, 'character.mp4');
+
+  const operationResponse = await generateVideo({
+    prompt: argv.prompt
   });
 
-  const outputDir = path.resolve(argv.output);
-  const mp4Path = path.join(outputDir, 'character.mp4');
-  fs.writeFileSync(mp4Path, Buffer.from(video.data, 'base64'));
+  await downloadGeneratedVideo({
+    operationResponse,
+    downloadPath: mp4Path
+  });
 
   const framesDir = path.join(outputDir, 'frames');
   await extractFrames({ input: mp4Path, outputDir: framesDir, fps: argv.fps });
