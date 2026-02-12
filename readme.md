@@ -21,6 +21,9 @@ node ./src/cli.js  --frames-only  --padding 0.2 --duration 3 --fps 12 --resoluti
 
 // 对大图片进行再次抽帧脚本（需要先生成大图片png）
 node src/selectFrames.js ./output 
+
+// 对抽帧后的小图片进行透明度安排(需要 sprite_6.png)
+node src/trim.js --input ./output/sprite_6.png
 ```
 
 输出目录包含：
