@@ -15,6 +15,7 @@ const basePromptPath = path.join(__dirname, 'descriptions.txt');
 
 const argv = yargs(hideBin(process.argv))
   .option('prompt', { type: 'string' })
+  .option('image', { type: 'string', description: 'Path to reference image file (absolute path)' })
   .option('padding', { type: 'number', default: 0, description: 'Optional padding around centered content in frames; can be a fraction of frame size (e.g. 0.1 for 10%) or an absolute pixel value' })
   .option('duration', { type: 'number', default: 3 })
   .option('fps', { type: 'number', default: 12 })
@@ -26,6 +27,15 @@ const argv = yargs(hideBin(process.argv))
 async function main() {
   if (!process.env.GOOGLE_API_KEY) {
     throw new Error('GOOGLE_API_KEY is required');
+  }
+
+  // Validate image path if provided
+  let imagePath = null;
+  if (argv.image) {
+    imagePath = path.resolve(argv.image);
+    if (!fs.existsSync(imagePath)) {
+      throw new Error(`Image file not found: ${imagePath}`);
+    }
   }
 
   const basePrompt = fs.readFileSync(basePromptPath, 'utf8').trim();
@@ -41,7 +51,7 @@ async function main() {
       throw new Error(`--frames-only set but mp4 not found at ${mp4Path}. Provide --input <path to mp4> or run without --frames-only to generate one.`);
     }
   } else {
-    const operationResponse = await generateVideo({ prompt: fullPrompt });
+    const operationResponse = await generateVideo({ prompt: fullPrompt, imagePath });
     await downloadGeneratedVideo({ operationResponse, downloadPath: mp4Path });
   }
 

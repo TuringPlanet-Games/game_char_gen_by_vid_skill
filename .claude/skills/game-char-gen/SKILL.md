@@ -36,6 +36,7 @@ node ./src/cli.js --frames-only --duration 3 --fps 12 --resolution 512x512 --out
 ## Key Parameters
 
 - `--prompt`: Text description of the character (be specific about pose/movement)
+- `--image`: Path to a reference image file (absolute path) to guide the generation
 - `--duration`: Video length in seconds (3-5 works well)
 - `--fps`: Frames per second (8-16 for sprite sheets)
 - `--resolution`: Video resolution (512x512 recommended)

@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { GoogleGenAI } from '@google/genai';
 
 const DEFAULT_MODEL = 'veo-3.1-generate-preview';
@@ -16,17 +17,35 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function uploadImage(ai, imagePath) {
+  const fileData = await ai.files.upload({
+    file: fs.createReadStream(imagePath),
+  });
+  return fileData;
+}
+
 export async function generateVideo({
-  prompt,
-  model = DEFAULT_MODEL,
-  pollIntervalMs = POLL_INTERVAL_MS
+    prompt,
+    imagePath,
+    model = DEFAULT_MODEL,
+    pollIntervalMs = POLL_INTERVAL_MS
 }) {
   const ai = createClient();
 
-  let operation = await ai.models.generateVideos({
+  const request = {
     model,
     prompt
-  });
+  };
+
+  // If image is provided, add it to the request
+  if (imagePath) {
+    const uploadedImage = await uploadImage(ai, imagePath);
+    request.image = {
+      gcsUri: uploadedImage.uri
+    };
+  }
+
+  let operation = await ai.models.generateVideos(request);
 
   while (!operation.done) {
     await sleep(pollIntervalMs);
