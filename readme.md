@@ -10,7 +10,16 @@
 GEMINI_API_KEY=your-key
 ```
 
-## 用法
+## skill 用法:
+
+```
+/game-char-gen  参考 路径  "/Users/paul/code/silicon-valley-artificial-XX-mvp/public/assets/phase4/enemies/sql_injection.png"  
+这个图片，生成游戏sql_injection 敌人walking 动画素材
+```
+
+![alt text](md_pics/readme/image.png)
+
+## 纯js脚本用法
 ```
 // 生成视频、抽帧并构建精灵图
 node ./src/cli.js --prompt "Your prompt" --duration 3 --fps 12 --resolution 512x512 --output ./output
