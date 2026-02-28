@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import { GoogleGenAI } from '@google/genai';
 
 const DEFAULT_MODEL = 'veo-3.1-generate-preview';
@@ -17,11 +18,28 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const MIME_TYPES = {
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.webp': 'image/webp',
+  '.gif': 'image/gif'
+};
+
+function getMimeType(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  return MIME_TYPES[ext] || 'application/octet-stream';
+}
+
 async function uploadImage(ai, imagePath) {
-  const fileData = await ai.files.upload({
-    file: fs.createReadStream(imagePath),
-  });
-  return fileData;
+  const fileBuffer = fs.readFileSync(imagePath);
+  const base64 = fileBuffer.toString('base64');
+  const mimeType = getMimeType(imagePath);
+
+  return {
+    imageBytes: base64,
+    mimeType: mimeType
+  };
 }
 
 export async function generateVideo({
@@ -41,7 +59,8 @@ export async function generateVideo({
   if (imagePath) {
     const uploadedImage = await uploadImage(ai, imagePath);
     request.image = {
-      gcsUri: uploadedImage.uri
+      imageBytes: uploadedImage.imageBytes,
+      mimeType: uploadedImage.mimeType
     };
   }
 
