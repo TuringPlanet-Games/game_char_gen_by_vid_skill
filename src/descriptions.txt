@@ -1,4 +1,4 @@
-A tower defense game character animation.
+A children education game character animation.
 2D game asset, front view, full body visible.
 Single character centered in frame.
 Pure black background.
@@ -6,3 +6,4 @@ Smooth looping animation.
 No camera movement.
 No background objects.
 Game-ready sprite animation.
+整体风格描述词：3D卡通风格，Q版可爱，毛茸茸质感，温暖色调，简洁、柔和。
